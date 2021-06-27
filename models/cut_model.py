@@ -141,8 +141,28 @@ class CUTModel(BaseModel):
         feat_q_pool, _ = self.netF(feat_q, self.cfg.num_patches, sample_ids)
 
         total_nce_loss = 0.0
-        for f_q, f_k, crit, nce_layer in zip(feat_q_pool, feat_k_pool, self.criterionNCE, self.nce_layers):
-            loss = crit(f_q, f_k,self.cfg.weighted) * self.cfg.lambda_NCE
-            total_nce_loss += loss.mean()
+        if self.cfg.weighted:
+            tmp = 0
+            for f_q, f_k, crit, nce_layer, ids in zip(feat_q_pool, feat_k_pool, self.criterionNCE, self.nce_layers,
+                                                      sample_ids):
+                weight = self.ids_to_weighted(ids,feat_k[tmp].shape[3],f_k.device)
+                loss = crit(f_q, f_k, weight) * self.cfg.lambda_NCE
+                total_nce_loss += loss.mean()
+                tmp += 1
+        else:
+            for f_q, f_k, crit, nce_layer in zip(feat_q_pool, feat_k_pool, self.criterionNCE, self.nce_layers):
+                loss = crit(f_q, f_k,self.cfg.weighted) * self.cfg.lambda_NCE
+                total_nce_loss += loss.mean()
 
         return total_nce_loss / n_layers
+
+    def ids_to_weighted(self,id_list, H, device):
+        y = [_ % H for _ in id_list]
+        x = [_ // H for _ in id_list]
+        x = torch.tensor(x, device=device, dtype=torch.float)
+        y = torch.tensor(y, device=device, dtype=torch.float)
+        disx = (x.view(1, -1) - x.view(-1, 1)) ** 2
+        disy = (y.view(1, -1) - y.view(-1, 1)) ** 2
+        dis = (disx + disy) ** 0.5
+        dis = dis / max(torch.max(dis), 0.01)
+        return dis

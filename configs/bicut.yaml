@@ -1,0 +1,13 @@
+# specific params for bicut
+lambda_GAN: 1.0
+lambda_NCE: 2.0
+lambda_SIM: 10.0
+nce_idt: True
+nce_layers: '0,1,2,3,4,5,6'
+nce_includes_all_negatives_from_minibatch: False
+netF: 'mlp_sample'
+netF_nc: 256
+nce_T: 0.07 
+num_patches: 256 
+flip_equivariance: False
+mode: 'SIM'

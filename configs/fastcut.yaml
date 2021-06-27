@@ -1,0 +1,14 @@
+# specific params for fastcut
+lambda_GAN: 1.0
+lambda_NCE: 10.0
+nce_idt: False
+nce_layers: '0,1,2,3,4,5,6'
+nce_includes_all_negatives_from_minibatch: False
+netF: 'mlp_sample'
+netF_nc: 256
+nce_T: 0.07 
+num_patches: 256 
+flip_equivariance: True
+# fast cut: short train schedule
+n_epochs: 150
+n_epochs_decay: 50

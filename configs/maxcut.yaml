@@ -1,0 +1,11 @@
+# max cut specific params 
+lambda_GAN: 1.0
+lambda_NCE: 1.0
+nce_idt: True
+nce_layers: '1,2'
+nce_includes_all_negatives_from_minibatch: False
+netF: 'mlp_samplev2'
+netF_nc: 256
+nce_T: 0.07 
+num_patches: 256 
+flip_equivariance: False

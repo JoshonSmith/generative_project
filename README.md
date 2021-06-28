@@ -19,7 +19,7 @@
 - 命令: 
 
 ```bash
-python train.py --display_id 0 --no_html \
+python train.py \
 --dataroot 数据路径 --name 数据名_maxcut --model maxcut --CUT_mode CUT \
 --gpu_ids 0
 ```
@@ -44,7 +44,7 @@ python train.py --display_id 0 --no_html \
 - 命令:
 
 ```bash
-python train.py --display_id 0 --no_html \
+python train.py \
 --dataroot 数据路径 --name 数据名_bicut --model bicut \
 --gpu_ids 0  
 ```
@@ -67,8 +67,8 @@ python train.py --display_id 0 --no_html \
 - 命令:
 
 ```bash
-python train.py --display_id 0 --no_html \
---dataroot 数据路径 --name 数据名_cut --model CUT --weighted_neg \
+python train.py \
+--dataroot 数据路径 --name 数据名_cut --model CUT --weighted True \
 --gpu_ids 0  
 ```
 

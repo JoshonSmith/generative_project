@@ -47,7 +47,7 @@ class Generator(nn.Module):
         blocks = []
         for i in range(num_blocks):
             blocks.append(ResNetBlock(middle_dim*4))
-        self.blocks = nn.Sequential(*blocks)
+        self.blocks = nn.ModuleList(blocks)
 
         self.up1 = nn.Sequential(*[nn.ConvTranspose2d(middle_dim*4, middle_dim * 2,
                                                       kernel_size=3, stride=2, padding=1,output_padding=1,bias=True),
@@ -71,7 +71,9 @@ class Generator(nn.Module):
             features.append(x)
             x = self.dw2(x)
             features.append(x)
-            x = self.blocks(x)
+            for bl in self.blocks:
+                x = bl(x)
+                features.append(x)
             features.append(x)
             x = self.up1(x)
             features.append(x)
@@ -80,12 +82,13 @@ class Generator(nn.Module):
             x = self.conv2(x)
             x = self.output(x)
             features.append(x)
-            return [features[_] for _ in full_feat]
+            return [features[_].detach().clone() for _ in full_feat]
         else:
             x = self.layer1(x)
             x = self.dw1(x)
             x = self.dw2(x)
-            x = self.blocks(x)
+            for bl in self.blocks:
+                x = bl(x)
             x = self.up1(x)
             x = self.up2(x)
             x = self.conv2(x)
